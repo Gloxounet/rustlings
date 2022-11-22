@@ -14,7 +14,6 @@
 
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -23,6 +22,14 @@ struct Team {
     name: String,
     goals_scored: u8,
     goals_conceded: u8,
+}
+
+fn actualise_score(team:&Team,match_team_score:u8,match_other_team_score:u8) -> Team {
+    return Team {
+        name: team.name.clone(),
+        goals_scored: team.goals_scored + match_team_score,
+        goals_conceded: team.goals_conceded + match_other_team_score
+    };
 }
 
 fn build_scores_table(results: String) -> HashMap<String, Team> {
@@ -40,6 +47,29 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        let team_1 = scores.get(&team_1_name);
+        let team_2 = scores.get(&team_2_name);
+
+        let t1 = match team_1 {
+            None => Team {
+                name:team_1_name.clone(),
+                goals_scored: team_1_score.clone(),
+                goals_conceded: team_2_score.clone()
+            },
+            Some(team) => actualise_score(team,team_1_score.clone(),team_2_score.clone())
+        };
+
+        let t2 = match team_2 {
+            None => Team {
+                name:team_2_name.clone(),
+                goals_scored: team_2_score,
+                goals_conceded: team_1_score
+            },
+            Some(team) => actualise_score(team,team_2_score.clone(),team_1_score.clone())
+        };
+
+        scores.insert(team_1_name,t1);
+        scores.insert(team_2_name,t2);
     }
     scores
 }
